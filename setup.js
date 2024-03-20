@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const semver = require('semver');
 
 // Logger configuration
 const logFile = 'debug.log';
@@ -34,10 +35,7 @@ prerequisites.forEach((prereq) => {
         const version = execSync(prereq.command, { encoding: 'utf8' }).trim();
         log(`${prereq.name} version: ${version}`);
 
-        const currentVersion = version.replace(/^v/, '');
-        const requiredVersion = prereq.minVersion.replace(/^v/, '');
-
-        if (currentVersion < requiredVersion) {
+        if (!semver.gte(version, prereq.minVersion)) {
             logError(
                 `${prereq.name} version ${prereq.minVersion} or higher is required. Please update ${prereq.name} and run the script again.`
             );
