@@ -27,13 +27,13 @@ function logError(message) {
 const prerequisites = [
     { name: 'Node.js', command: 'node --version', minVersion: 'v14.0.0' },
     { name: 'npm', command: 'npm --version', minVersion: '6.0.0' },
-    { name: 'Git', command: 'git --version', minVersion: '2.0.0' },
+    { name: 'Git', command: '/usr/bin/git --version', minVersion: '2.0.0' },
 ];
 
 prerequisites.forEach((prereq) => {
     try {
         const version = execSync(prereq.command, { encoding: 'utf8' }).trim();
-        log(`${prereq.name} version: ${version}`);
+        log(`${prereq.name} version: ${prereq.minVersion} - current: ${current}`);
 
         if (!semver.gte(version, prereq.minVersion)) {
             logError(
