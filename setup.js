@@ -86,7 +86,7 @@ try {
     log('NeoVim is already installed.');
 } catch (error) {
     log('Installing NeoVim...');
-    runCommand('sudo apt-get install neovim');
+    runCommand('sudo apt-get install -y neovim');
     log('NeoVim installation completed.');
 }
 
@@ -139,8 +139,9 @@ log('NVChad and LSPs configuration completed.');
 
 // Install LSPs (Python / TypeScript)
 log('Installing LSPs for Python and TypeScript...');
-runCommand('sudo npm install -g pyright');
-runCommand('sudo npm install -g typescript-language-server');
+const npmPath = execSync('which npm', { encoding: 'utf8' }).trim();
+runCommand(`sudo ${npmPath} install -g pyright`);
+runCommand(`sudo ${npmPath} install -g typescript-language-server`);
 log('LSPs for Python and TypeScript installed.');
 
 log('Setup completed successfully!');
