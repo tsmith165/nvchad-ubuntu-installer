@@ -68,6 +68,17 @@ function runCommand(command) {
     }
 }
 
+// Install unzip if not already installed
+log('Checking if unzip is installed...');
+try {
+    execSync('unzip --version', { stdio: 'inherit' });
+    log('unzip is already installed.');
+} catch (error) {
+    log('Installing unzip...');
+    runCommand('sudo apt-get install -y unzip');
+    log('unzip installation completed.');
+}
+
 // Install NeoVim if not already installed
 log('Checking if NeoVim is installed...');
 try {
