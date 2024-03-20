@@ -139,8 +139,8 @@ log('NVChad and LSPs configuration completed.');
 
 // Install LSPs (Python / TypeScript)
 log('Installing LSPs for Python and TypeScript...');
-runCommand('sudo npm install -g pyright');
-runCommand('sudo npm install -g typescript-language-server');
+runCommand('npm install -g pyright');
+runCommand('npm install -g typescript-language-server');
 log('LSPs for Python and TypeScript installed.');
 
 log('Setup completed successfully!');
