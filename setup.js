@@ -3,7 +3,6 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
-const semver = require('semver');
 
 // Logger configuration
 const logFile = 'debug.log';
@@ -27,22 +26,32 @@ function logError(message) {
 const prerequisites = [
     { name: 'Node.js', command: 'node --version', minVersion: 'v14.0.0' },
     { name: 'npm', command: 'npm --version', minVersion: '6.0.0' },
-    { name: 'Git', command: '/usr/bin/git --version', minVersion: '2.0.0' },
+    { name: 'Git', command: 'git --version', minVersion: '2.0.0' },
 ];
 
 prerequisites.forEach((prereq) => {
     try {
-        const version = execSync(prereq.command, { encoding: 'utf8' }).trim();
-        log(`${prereq.name} version: ${prereq.minVersion} - current: ${current}`);
+        let version = execSync(prereq.command, { encoding: 'utf8' }).trim();
+        log(`${prereq.name} version: ${version}`);
 
-        if (!semver.gte(version, prereq.minVersion)) {
-            logError(
-                `${prereq.name} version ${prereq.minVersion} or higher is required. Please update ${prereq.name} and run the script again.`
-            );
-            process.exit(1);
+        // Remove leading 'v' character from version strings
+        version = version.replace(/^v/, '');
+        const minVersion = prereq.minVersion.replace(/^v/, '');
+
+        const versionParts = version.split('.');
+        const minVersionParts = minVersion.split('.');
+
+        for (let i = 0; i < minVersionParts.length; i++) {
+            if (parseInt(versionParts[i]) < parseInt(minVersionParts[i])) {
+                throw new Error(`${prereq.name} version ${prereq.minVersion} or higher is required.`);
+            }
+            if (parseInt(versionParts[i]) > parseInt(minVersionParts[i])) {
+                break;
+            }
         }
     } catch (error) {
-        logError(`${prereq.name} is not installed. Please install it and run the script again.`);
+        logError(`${prereq.name} version check failed: ${error.message}`);
+        logError(`Please update ${prereq.name} and run the script again.`);
         process.exit(1);
     }
 });
